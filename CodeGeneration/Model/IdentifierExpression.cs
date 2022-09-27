@@ -1,3 +1,3 @@
-namespace CodeGeneration.Model.Classes;
+namespace CodeGeneration.Model;
 
 public record IdentifierExpression(string Identifier) : Expression;

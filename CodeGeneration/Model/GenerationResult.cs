@@ -1,4 +1,6 @@
-namespace CodeGeneration.Model.Classes;
+using CodeGeneration.Model.Classes;
+
+namespace CodeGeneration.Model;
 
 public class GenerationResult
 {

@@ -1,15 +1,17 @@
-namespace CodeGeneration.Model.Classes;
+using CodeGeneration.Model.Classes;
+
+namespace CodeGeneration.Model;
 
 public static class CodeMixin
 {
-    public static IEnumerable<string> ToReadableList(this IEnumerable<Code> codes)
+    public static IEnumerable<string> ToCodeFormatContent(this IEnumerable<Code> codes)
     {
         var map = new Dictionary<DynamicReference, string>();
 
         return codes.Select(code => Format(code, map));
     }
 
-    private static string Format(Code code, Dictionary<DynamicReference, string> map)
+    private static string Format(Code code, IDictionary<DynamicReference, string> map)
     {
         if (code.Right is null)
         {

@@ -1,6 +1,7 @@
+using CodeGeneration.Model;
 using CodeGeneration.Model.Classes;
 
-namespace CodeGeneration.Model;
+namespace CodeGeneration;
 
 public class IntermediateCodeGenerator
 {

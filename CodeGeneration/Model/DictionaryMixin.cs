@@ -1,4 +1,4 @@
-namespace CodeGeneration.Model.Classes;
+namespace CodeGeneration.Model;
 
 public static class DictionaryMixin
 {
