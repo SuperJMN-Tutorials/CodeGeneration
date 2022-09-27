@@ -5,15 +5,16 @@ namespace CodeGeneration;
 
 public class IntermediateCodeGenerator
 {
-    public GenerationResult Generate(AssignmentExpression assignment)
+    public Fragment Generate(AssignmentExpression assignment)
     {
-        var r = new NamedReference(assignment.Identifier.Identifier);
-        var g = Generate(r, assignment.Expression);
+        var reference = new NamedReference(assignment.Identifier.Identifier);
+        var expressionFragment = Generate(reference, assignment.Expression);
 
-        return new GenerationResult(r, g.Codes.Concat(new[] { new Code(r, g.Reference, null, '=') }));
+        var code = new Code(reference, expressionFragment.Reference, null, '=');
+        return new Fragment(reference, expressionFragment.Codes.Concat(new[] {code}));
     }
 
-    private GenerationResult Generate(Reference r, Expression expression)
+    private Fragment Generate(Reference r, Expression expression)
     {
         return expression switch
         {
@@ -23,28 +24,30 @@ public class IntermediateCodeGenerator
         };
     }
 
-    private GenerationResult Generate(ConstantExpression cex)
+    private Fragment Generate(ConstantExpression cex)
     {
-        return new GenerationResult();
+        var placeholder = new Placeholder();
+        return new Fragment(placeholder, new Code(placeholder, new ConstantReference(cex.Constant), null, '='));
     }
 
-    private GenerationResult Generate(BinaryExpression bex)
+    private Fragment Generate(BinaryExpression bex)
     {
-        var a = Generate(bex.Left);
-        var b = Generate(bex.Right);
+        var left = Generate(bex.Left);
+        var right = Generate(bex.Right);
 
-        var r = new DynamicReference();
-        var codes = a.Codes.Concat(b.Codes).Concat(new[] { new Code(r, a.Reference, b.Reference, bex.Operator) }).ToArray();
-        return new GenerationResult(r, codes);
+        var placeholder = new Placeholder();
+        var code = new Code(placeholder, left.Reference, right.Reference, bex.Operator);
+        return new Fragment(placeholder, left.Codes.Concat(right.Codes).Concat(new[] {code}));
     }
 
-    private GenerationResult Generate(IdentifierExpression bex)
+    private Fragment Generate(IdentifierExpression bex)
     {
-        var r = new DynamicReference();
-        return new GenerationResult(r, new[] { new Code(r, new NamedReference(bex.Identifier), null, '=') });
+        var placeholder = new Placeholder();
+        var code = new Code(placeholder, new NamedReference(bex.Identifier), null, '=');
+        return new Fragment(placeholder, code);
     }
 
-    private GenerationResult Generate(Expression expression)
+    private Fragment Generate(Expression expression)
     {
         return expression switch
         {
@@ -53,5 +56,15 @@ public class IntermediateCodeGenerator
             IdentifierExpression iex => Generate(iex),
             _ => throw new NotSupportedException(),
         };
+    }
+}
+
+internal class ConstantReference : Reference
+{
+    public int Constant { get; }
+
+    public ConstantReference(int constant)
+    {
+        Constant = constant;
     }
 }
