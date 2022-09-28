@@ -11,7 +11,7 @@ public class IntermediateCodeGenerator
         var expressionFragment = Generate(reference, assignment.Expression);
 
         var code = new Code(reference, expressionFragment.Reference, null, '=');
-        return new Fragment(reference, expressionFragment.Codes.Concat(new[] {code}));
+        return new Fragment(reference, expressionFragment.Codes.Concat(new[] { code }));
     }
 
     private Fragment Generate(Reference r, Expression expression)
@@ -27,7 +27,7 @@ public class IntermediateCodeGenerator
     private Fragment Generate(ConstantExpression cex)
     {
         var placeholder = new Placeholder();
-        return new Fragment(placeholder, new Code(placeholder, new ConstantReference(cex.Constant), null, '='));
+        return new Fragment(x => new Code(placeholder, new ConstantReference(cex.Constant), null, '='));
     }
 
     private Fragment Generate(BinaryExpression bex)
@@ -35,16 +35,12 @@ public class IntermediateCodeGenerator
         var left = Generate(bex.Left);
         var right = Generate(bex.Right);
 
-        var placeholder = new Placeholder();
-        var code = new Code(placeholder, left.Reference, right.Reference, bex.Operator);
-        return new Fragment(placeholder, left.Codes.Concat(right.Codes).Concat(new[] {code}));
+        return new Fragment(reference => new Code(reference, left.Reference, right.Reference, bex.Operator), left.Codes.Concat(right.Codes));
     }
 
     private Fragment Generate(IdentifierExpression bex)
     {
-        var placeholder = new Placeholder();
-        var code = new Code(placeholder, new NamedReference(bex.Identifier), null, '=');
-        return new Fragment(placeholder, code);
+        return new Fragment(reference => new Code(reference, new NamedReference(bex.Identifier), null, '='));
     }
 
     private Fragment Generate(Expression expression)

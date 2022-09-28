@@ -4,12 +4,14 @@ namespace CodeGeneration.Model;
 
 public class Fragment
 {
-    public Fragment(Code code) : this(new Placeholder(), code)
+    public Fragment(Func<Reference, Code> codeFactory) : this(codeFactory, Enumerable.Empty<Code>())
     {
     }
 
-    public Fragment(Reference reference, Code code) : this(reference, new[] {code})
+    public Fragment(Func<Reference, Code> codeFactory, IEnumerable<Code> codes)
     {
+        Reference = new Placeholder();
+        Codes = codes.Concat(new[] {codeFactory(Reference)});
     }
 
     public Fragment(Reference reference, IEnumerable<Code> codes)
