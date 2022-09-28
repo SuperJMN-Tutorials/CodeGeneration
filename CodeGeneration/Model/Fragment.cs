@@ -22,4 +22,9 @@ public class Fragment
 
     public Reference Reference { get; }
     public IEnumerable<Code> Codes { get; }
+
+    public Fragment Prepend(Fragment fragment)
+    {
+        return new Fragment(Reference, fragment.Codes.Concat(Codes));
+    }
 }

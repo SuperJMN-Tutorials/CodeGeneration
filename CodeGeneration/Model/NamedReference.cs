@@ -4,10 +4,10 @@ namespace CodeGeneration.Model;
 
 public class NamedReference : Reference
 {
-    public string Value { get; }
-
     public NamedReference(string value)
     {
         Value = value;
     }
+
+    public string Value { get; }
 }
